@@ -1,4 +1,4 @@
-﻿//  #COLLISION_RUN
+﻿//  #PLUS_COLLISION
 //■人やモノとぶつかると発動する。
 
 default{

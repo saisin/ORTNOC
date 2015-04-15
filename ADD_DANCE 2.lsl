@@ -2,7 +2,7 @@
 //
 //  CONTRO - #ADD_DANCE
 //
-// ver.1.1[2015/1/28]
+// ver.2.0[2015/4/1]
 //##########################################
 //[ スクリの動作 ]
 // ダンス用のスクリプト
@@ -10,16 +10,16 @@
 //
 //
 // [ コントローラーコマンド ]
-// DANCE_REGISTRY,___,登録ナンバー,アバター名            //最初にアバターを登録する
-// DANCE_START,___,登録ナンバー,アニメーション名,時間        //時間分アニメーションする。0だとループ
-// DANCE_STOP,___,登録ナンバー                                //ダンスを止める
+// DANCE_REGISTRY,___,アバター名,登録ナンバー            						//最初にアバターを登録する
+// DANCE_START,___,アニメーション名,時間,登録ナンバー(1),登録ナンバー(2)   //時間分アニメーションする。0だとループ
+// DANCE_STOP,___,登録ナンバー(1),登録ナンバー(2)                                	//ダンスを止める
 //
 //
 //====================================================
 //[input]
-// (link_message) DANCE_REGISTRY&number&avatar_name
-// (link_message) DANCE_START&avatar_name&anim_name
-// (link_message) DANCE_STOP&avatar_name&anim_name
+// (link_message) DANCE_REGISTRY&avatar_name&registry_number
+// (link_message) DANCE_START&anim_name&anim_time&registry_number&registry_number
+// (link_message) DANCE_STOP&registry_number&registry_number
 //
 //##########################################8
 list NUMLIST=["0","1","2","3","4","5","6","7","8","9"]; //数字チェック用
@@ -34,8 +34,6 @@ string nowanim;                      //実行中のアニメーション
 list next_anim_stlist;                 //再生するアニメーションのストライドリスト(アニメーション名,(float)時間)
 
 integer tgt_number;              //要求されている操作先ナンバー
-string tgt_name;                //要求されているアバター名もしくはアニメーション名
-float tgt_sec;                  //アニメーションの秒数
 integer perm;                    //アニメーションのパーミッションフラグ
 
 integer i;
@@ -92,42 +90,41 @@ default{
         list data_list=llParseString2List(msg,["&"],[]);
         string command=llList2String(data_list,0);//比較用にコマンドは変数に入れる
 
-        tgt_number=(integer)llList2String(data_list,1);  //操作先の番号
-        if(tgt_number!=my_script_number){return;}
-
-        //パラメータを格納して各コマンドを実行する
-        tgt_name=llList2String(data_list,2);        //アバター名もしくはアニメーション名
-        tgt_sec=(float)llList2String(data_list,3);  //アニメーションの秒数
-
-        if(command=="DANCE_REGISTRY"){
+        if(command=="DANCE_REGISTRY"){//DANCE_REGISTRY,AVANAME,NUMBER
+			if(llList2String(data_list,2)!=my_script_number){return;}
             llSetTimerEvent(0);//とりあえず、全てストップしてリセット
             if(perm&PERMISSION_TRIGGER_ANIMATION){
                 llStopAnimation(nowanim);
             }
             nowanim="";
             next_anim_stlist=[];
+			string tgt_name=llList2String;
             if(my_avatar_name!=tgt_name){//上書きの場合実行
                 if(tgt_name==llKey2Name(llGetOwner())){//オーナーならそのままアニメ権限取得へ、そうでないならセンサーで探す
                     llRequestPermissions(llGetOwner(),PERMISSION_TRIGGER_ANIMATION);
                 }else{
 					if(tgt_name==""){
+						my_avatar_key="";
+						my_avatar_name="";
 						llRequestPermissions("1612e679-795f-4e53-ac8f-f01c8351e854",PERMISSION_TRIGGER_ANIMATION);
 					}else{
 						llSensor(tgt_name,"",AGENT,96,PI);
 					}
                 }
             }
-        }else if(command=="DANCE_START"){
+        }else if(command=="DANCE_START"){//DANCE_START,DANCENAME,TIME,NUMBER,NUMBER
+			if(llListFindList(llList2List(data_list,3,-1),(list)my_script_number)==-1){return;}
             if(perm&PERMISSION_TRIGGER_ANIMATION){
                 AddAnimation(tgt_name,tgt_sec);
             }
-        }else if(command=="DANCE_STOP"){
-                if(perm&PERMISSION_TRIGGER_ANIMATION){
-                    llSetTimerEvent(0);
-                    if(nowanim!=""){llStopAnimation(nowanim);}
-                    nowanim="";
-                    next_anim_stlist=[];
-                }
+        }else if(command=="DANCE_STOP"){//DANCE_STOP,NUMBER,NUMBER
+			if(llListFindList(data_list,(list)my_script_number)==-1){return;}
+			if(perm&PERMISSION_TRIGGER_ANIMATION){
+				llSetTimerEvent(0);
+				if(nowanim!=""){llStopAnimation(nowanim);}
+				nowanim="";
+				next_anim_stlist=[];
+			}
         }
     }
     run_time_permissions(integer tmp){
@@ -142,9 +139,7 @@ default{
         NextAnimation();
     }
     sensor(integer num){
-        my_avatar_name=tgt_name;
-        my_avatar_key=llDetectedKey(0);
-        llRequestPermissions(my_avatar_key,PERMISSION_TRIGGER_ANIMATION);
+        llRequestPermissions(llDetectedKey(0),PERMISSION_TRIGGER_ANIMATION);
     }
     no_sensor(){
         llOwnerSay(tgt_name+MSG_COULDNT_FIND_AVATAR);
