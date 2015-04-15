@@ -1,18 +1,18 @@
-//##########################################
+ï»¿//##########################################
 //
 //  CONTRO - #ADD_DANCE
 //
 // ver.2.0[2015/4/1]
 //##########################################
-//[ ƒXƒNƒŠ‚Ì“®ì ]
-// ƒ_ƒ“ƒX—p‚ÌƒXƒNƒŠƒvƒg
-// ‚P‚ÂI‚í‚é‚ÆŸ‚ÌƒAƒjƒ‚ğ‡ŸÄ¶‚·‚éBd•¡‚Í‚Å‚«‚È‚¢B
+//[ ã‚¹ã‚¯ãƒªã®å‹•ä½œ ]
+// ãƒ€ãƒ³ã‚¹ç”¨ã®ã‚¹ã‚¯ãƒªãƒ—ãƒˆ
+// ï¼‘ã¤çµ‚ã‚ã‚‹ã¨æ¬¡ã®ã‚¢ãƒ‹ãƒ¡ã‚’é †æ¬¡å†ç”Ÿã™ã‚‹ã€‚é‡è¤‡ã¯ã§ããªã„ã€‚
 //
 //
-// [ ƒRƒ“ƒgƒ[ƒ‰[ƒRƒ}ƒ“ƒh ]
-// ___,DANCE_REGISTRY,ƒAƒoƒ^[–¼,“o˜^ƒiƒ“ƒo[                                    //Å‰‚ÉƒAƒoƒ^[‚ğ“o˜^‚·‚é
-// ___,DANCE_START,ƒAƒjƒ[ƒVƒ‡ƒ“–¼,ŠÔ,“o˜^ƒiƒ“ƒo[(1),“o˜^ƒiƒ“ƒo[(2)   //ŠÔ•ªƒAƒjƒ[ƒVƒ‡ƒ“‚·‚éB0‚¾‚Æƒ‹[ƒv
-// ___,DANCE_STOP,“o˜^ƒiƒ“ƒo[(1),“o˜^ƒiƒ“ƒo[(2)                                    //ƒ_ƒ“ƒX‚ğ~‚ß‚é
+// [ ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã‚³ãƒãƒ³ãƒ‰ ]
+// ___,DANCE_REGISTRY,ã‚¢ãƒã‚¿ãƒ¼å,ç™»éŒ²ãƒŠãƒ³ãƒãƒ¼                                    //æœ€åˆã«ã‚¢ãƒã‚¿ãƒ¼ã‚’ç™»éŒ²ã™ã‚‹
+// ___,DANCE_START,ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å,æ™‚é–“,ç™»éŒ²ãƒŠãƒ³ãƒãƒ¼(1),ç™»éŒ²ãƒŠãƒ³ãƒãƒ¼(2)   //æ™‚é–“åˆ†ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã™ã‚‹ã€‚0ã ã¨ãƒ«ãƒ¼ãƒ—
+// ___,DANCE_STOP,ç™»éŒ²ãƒŠãƒ³ãƒãƒ¼(1),ç™»éŒ²ãƒŠãƒ³ãƒãƒ¼(2)                                    //ãƒ€ãƒ³ã‚¹ã‚’æ­¢ã‚ã‚‹
 //
 //
 //====================================================
@@ -22,20 +22,20 @@
 // (link_message) DANCE_STOP&registry_number&registry_number
 //
 //##########################################8
-list NUMLIST=["0","1","2","3","4","5","6","7","8","9"]; //”šƒ`ƒFƒbƒN—p
-integer LNKMSGCHNL=466938182; //ƒŠƒ“ƒNƒƒbƒZ[ƒW‚Å’ÊM‚·‚éƒ`ƒƒƒ“ƒlƒ‹
-string MSG_COULDNT_FIND_AVATAR="‚³‚ñ‚ª96mˆÈ“à‚ÉŒ©‚Â‚©‚è‚Ü‚¹‚ñ‚Å‚µ‚½B";
-string MSG_PERMISSION_ERROR="ƒAƒjƒ[ƒVƒ‡ƒ“‚ÌŒ ŒÀ‚ª‚ ‚è‚Ü‚¹‚ñBDANCE_REGISTRYƒRƒ}ƒ“ƒh‚ÅŒ ŒÀ‚ğæ“¾‚µ‚Ä‚­‚¾‚³‚¢B";
+list NUMLIST=["0","1","2","3","4","5","6","7","8","9"]; //æ•°å­—ãƒã‚§ãƒƒã‚¯ç”¨
+integer LNKMSGCHNL=466938182; //ãƒªãƒ³ã‚¯ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã§é€šä¿¡ã™ã‚‹ãƒãƒ£ãƒ³ãƒãƒ«
+string MSG_COULDNT_FIND_AVATAR="ã•ã‚“ãŒ96mä»¥å†…ã«è¦‹ã¤ã‹ã‚Šã¾ã›ã‚“ã§ã—ãŸã€‚";
+string MSG_PERMISSION_ERROR="ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®æ¨©é™ãŒã‚ã‚Šã¾ã›ã‚“ã€‚DANCE_REGISTRYã‚³ãƒãƒ³ãƒ‰ã§æ¨©é™ã‚’å–å¾—ã—ã¦ãã ã•ã„ã€‚";
 
-integer my_script_number;                //‚±‚ÌƒXƒNƒŠƒvƒg‚Ì”Ô†
-string my_avatar_name;                    //‚±‚ÌƒXƒNƒŠƒvƒg‚ª•Û‚µ‚Ä‚¢‚éƒAƒoƒ^[–¼
-key my_avatar_key;                    //‚±‚ÌƒXƒNƒŠƒvƒg‚ª•Û‚µ‚Ä‚¢‚éƒAƒoƒ^[ƒL[
-string nowanim;                      //Às’†‚ÌƒAƒjƒ[ƒVƒ‡ƒ“
-list next_anim_stlist;                 //Ä¶‚·‚éƒAƒjƒ[ƒVƒ‡ƒ“‚ÌƒXƒgƒ‰ƒCƒhƒŠƒXƒg(ƒAƒjƒ[ƒVƒ‡ƒ“–¼,(float)ŠÔ)
+integer my_script_number;                //ã“ã®ã‚¹ã‚¯ãƒªãƒ—ãƒˆã®ç•ªå·
+string my_avatar_name;                    //ã“ã®ã‚¹ã‚¯ãƒªãƒ—ãƒˆãŒä¿æŒã—ã¦ã„ã‚‹ã‚¢ãƒã‚¿ãƒ¼å
+key my_avatar_key;                    //ã“ã®ã‚¹ã‚¯ãƒªãƒ—ãƒˆãŒä¿æŒã—ã¦ã„ã‚‹ã‚¢ãƒã‚¿ãƒ¼ã‚­ãƒ¼
+string nowanim;                      //å®Ÿè¡Œä¸­ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³
+list next_anim_stlist;                 //å†ç”Ÿã™ã‚‹ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®ã‚¹ãƒˆãƒ©ã‚¤ãƒ‰ãƒªã‚¹ãƒˆ(ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å,(float)æ™‚é–“)
 
 string tgt_name;
-integer tgt_number;              //—v‹‚³‚ê‚Ä‚¢‚é‘€ìæƒiƒ“ƒo[
-integer perm;                    //ƒAƒjƒ[ƒVƒ‡ƒ“‚Ìƒp[ƒ~ƒbƒVƒ‡ƒ“ƒtƒ‰ƒO
+integer tgt_number;              //è¦æ±‚ã•ã‚Œã¦ã„ã‚‹æ“ä½œå…ˆãƒŠãƒ³ãƒãƒ¼
+integer perm;                    //ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®ãƒ‘ãƒ¼ãƒŸãƒƒã‚·ãƒ§ãƒ³ãƒ•ãƒ©ã‚°
 
 integer i;
 //==========================================================
@@ -43,7 +43,7 @@ AddAnimation(string anim,float second){
     if(nowanim==""){
         nowanim=anim;
         llStartAnimation(anim);
-        //ƒ^ƒCƒ}[ƒZƒbƒg
+        //ã‚¿ã‚¤ãƒãƒ¼ã‚»ãƒƒãƒˆ
         llSetTimerEvent(second);
     }else{
         next_anim_stlist+=[anim,second];
@@ -66,7 +66,7 @@ default{
         llResetScript();
     }
     state_entry(){
-        //my_script_numberæ“¾ŠJn
+        //my_script_numberå–å¾—é–‹å§‹
         string tmp=llGetScriptName();
         integer index=llStringLength(tmp)-1;
         for(i=0;i<4;i++){
@@ -81,19 +81,19 @@ default{
     link_message(integer sender,integer num,string msg,key id)
     {
         //-----------------------------------------------------------------------------
-        //msg‚ÉƒRƒ}ƒ“ƒh–¼‚Æ•¡”‚Ìƒpƒ‰ƒ[ƒ^[‚ª&‹æØ‚è‚Å‘—‚ç‚ê‚Ä‚­‚é‚Ì‚Å
-        //•ªŠ„‚µ‚ÄƒŠƒXƒgdata_list‚É•Û‘¶‚·‚éB
-        //ƒRƒ}ƒ“ƒh–¼‚ğƒ`ƒFƒbƒN‚µ‚ÄD‚«‚Èˆ—‚ğÀs‚·‚éB
+        //msgã«ã‚³ãƒãƒ³ãƒ‰åã¨è¤‡æ•°ã®ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ãƒ¼ãŒ&åŒºåˆ‡ã‚Šã§é€ã‚‰ã‚Œã¦ãã‚‹ã®ã§
+        //åˆ†å‰²ã—ã¦ãƒªã‚¹ãƒˆdata_listã«ä¿å­˜ã™ã‚‹ã€‚
+        //ã‚³ãƒãƒ³ãƒ‰åã‚’ãƒã‚§ãƒƒã‚¯ã—ã¦å¥½ããªå‡¦ç†ã‚’å®Ÿè¡Œã™ã‚‹ã€‚
         //-----------------------------------------------------------------------------
         if(num!=0){
             return;
         }
         list data_list=llParseString2List(msg,["&"],[]);
-        string command=llList2String(data_list,0);//”äŠr—p‚ÉƒRƒ}ƒ“ƒh‚Í•Ï”‚É“ü‚ê‚é
+        string command=llList2String(data_list,0);//æ¯”è¼ƒç”¨ã«ã‚³ãƒãƒ³ãƒ‰ã¯å¤‰æ•°ã«å…¥ã‚Œã‚‹
         
         if(command=="DANCE_REGISTRY"){//DANCE_REGISTRY,AVANAME,NUMBER
             if((integer)llList2String(data_list,2)!=my_script_number){return;}
-            llSetTimerEvent(0);//‚Æ‚è‚ ‚¦‚¸A‘S‚ÄƒXƒgƒbƒv‚µ‚ÄƒŠƒZƒbƒg
+            llSetTimerEvent(0);//ã¨ã‚Šã‚ãˆãšã€å…¨ã¦ã‚¹ãƒˆãƒƒãƒ—ã—ã¦ãƒªã‚»ãƒƒãƒˆ
             if(perm&PERMISSION_TRIGGER_ANIMATION){
                 if(nowanim!=""){
                     llStopAnimation(nowanim);
@@ -102,8 +102,8 @@ default{
             nowanim="";
             next_anim_stlist=[];
             tgt_name=llList2String(data_list,1);
-            if(my_avatar_name!=tgt_name){//ã‘‚«‚Ìê‡Às
-                if(tgt_name==llKey2Name(llGetOwner())){//ƒI[ƒi[‚È‚ç‚»‚Ì‚Ü‚ÜƒAƒjƒŒ ŒÀæ“¾‚ÖA‚»‚¤‚Å‚È‚¢‚È‚çƒZƒ“ƒT[‚Å’T‚·
+            if(my_avatar_name!=tgt_name){//ä¸Šæ›¸ãã®å ´åˆå®Ÿè¡Œ
+                if(tgt_name==llKey2Name(llGetOwner())){//ã‚ªãƒ¼ãƒŠãƒ¼ãªã‚‰ãã®ã¾ã¾ã‚¢ãƒ‹ãƒ¡æ¨©é™å–å¾—ã¸ã€ãã†ã§ãªã„ãªã‚‰ã‚»ãƒ³ã‚µãƒ¼ã§æ¢ã™
                     llRequestPermissions(llGetOwner(),PERMISSION_TRIGGER_ANIMATION);
                 }else{
                     if(tgt_name==""){
