@@ -13,28 +13,28 @@
 //
 //====================================================
 //[input]
-// (link_message) 0,"POSMEMORY",""  [from Combine]  //POSMEMORYスクリから相対化の指示
-// (link_message) 0,"POSSET",""  [from Combine]  //POSMEMORYスクリから絶対化の指示
+// (link_message) 0,"POSMEMORY",""  [from PosMemory]  //POSMEMORYスクリから相対化の指示
+// (link_message) 0,"POSSET",""  [from PosMemory]  //POSMEMORYスクリから絶対化の指示
 //
 //[output]
 //
 //channelname&
 //{
-// REZ,XXX,<X,Y,Z>,<ROT_X,ROT_Y,ROT_Z>,second
-// DEL,XXX,second
-// COLOR,XXX,<R,G,B>
-// COLOR_ANIM,XXX,<R,G,B>,<R,G,B>,second
-// ALPHA,XXX,alpha
-// ALPHA_ANIM,XXX,alpha,alpha,second
-// MOVE,XXX,<X,Y,Z>,<ROT_X,ROT_Y,ROT_Z>
-// MOVE_ANIM,XXX,<X,Y,Z>,<ROT_X,ROT_Y,ROT_Z>,<X,Y,Z>,<ROT_X,ROT_Y,ROT_Z>,second
-// WAIT,XXX,second
+// ___,REZ,<X,Y,Z>,<ROT_X,ROT_Y,ROT_Z>,second
+// ___,DEL,second
+// ___,COLOR,<R,G,B>
+// ___,COLOR_ANIM,<R,G,B>,<R,G,B>,second
+// ___,ALPHA,alpha
+// ___,ALPHA_ANIM,alpha,alpha,second
+// ___,MOVE,<X,Y,Z>,<ROT_X,ROT_Y,ROT_Z>
+// ___,MOVE_ANIM,<X,Y,Z>,<ROT_X,ROT_Y,ROT_Z>,<X,Y,Z>,<ROT_X,ROT_Y,ROT_Z>,second
+// ___,WAIT,second
 //
-// 好きなコマンド,XXX,好きな文字列
+// ___,好きなコマンド,好きな文字列
 //}
 //##########################################
-integer COMMON_CHANNEL=1357246809; //共通リッスンチャンネル
-//integer COMMON_CHANNEL=0; //共通リッスンチャンネル
+//integer COMMON_CHANNEL=1357246809; //共通リッスンチャンネル
+integer COMMON_CHANNEL=0; //共通リッスンチャンネル
 string NOTENAME="commands";
 
 list commandlist=[]; //ノートカードから読み込んだコマンドのリスト
@@ -49,20 +49,32 @@ key req_note;
 integer noteline; //現在の読み込み行
 integer jointflg;
 string jointstrings;
+integer loadingflg;
 
 //==============================================
 Run(){
+    if(loadingflg){llOwnerSay("コマンドを読み込み中です、少々おまちください");return;}
     string chnlname=llGetObjectDesc();//チャンネル名取得
     //1024以内に分割して送信
     string send=chnlname;
     integer i;
     string tmp;
+    string checkcmd;
+    integer chatchnl;
+    list tmplist;
     for(i=command_index;i<llGetListLength(commandlist);i++){
         command_index++;
         tmp=llList2String(commandlist,i);
-        if(llGetSubString(tmp,0,4)=="WAIT,"){
+        checkcmd=llGetSubString(tmp,0,5);
+        if(checkcmd=="SHOUT,"){
+            tmplist=llParseString2List(tmp,[","],[]);
+            llShout((integer)llList2String(tmplist,1),llList2String(tmplist,2));
+        }else if(llGetSubString(checkcmd,0,4)=="WAIT,"){
             llSetTimerEvent((float)llGetSubString(tmp,5,-1));
             i=10000;
+        }else if(llGetSubString(checkcmd,0,3)=="SAY,"){
+            tmplist=llParseString2List(tmp,[","],[]);
+            llSay((integer)llList2String(tmplist,1),llList2String(tmplist,2));
         }else{
             if((llStringLength(send)+llStringLength(tmp)+2)<1000){
                 send+="\n"+tmp;
@@ -80,6 +92,7 @@ default{
         if((llGetObjectDesc()=="")||(llGetObjectDesc()=="(No Description)")){
             llSetObjectDesc("A");
         }
+        loadingflg=TRUE;
         req_note=llGetNotecardLine(NOTENAME,0);
     }
     touch_start(integer num){
@@ -88,6 +101,7 @@ default{
         Run();
     }
     timer(){
+        llSetTimerEvent(0);
         Run();
     }
     changed(integer chg){
@@ -101,6 +115,7 @@ default{
                 jointstrings="";
                 jointflg=FALSE;
                 llSetText("",<1,1,1>,0);
+                loadingflg=TRUE;
                 req_note=llGetNotecardLine(NOTENAME,0);
             }
         }
@@ -160,9 +175,10 @@ default{
                 command_after=llDumpList2String(tmplist,">");
                 commandlist=llParseString2List(command_after,["&"],[]);
 
-                llOwnerSay("poslist="+llDumpList2String(command_pos_list,"\n"));
-                llOwnerSay("anglist="+llDumpList2String(command_ang_list,"\n"));
+                //llOwnerSay("poslist="+llDumpList2String(command_pos_list,"\n"));
+                //llOwnerSay("anglist="+llDumpList2String(command_ang_list,"\n"));
                 //llOwnerSay("cmdlist="+llDumpList2String(commandlist,"\n"));
+                loadingflg=FALSE;
             }
         }
     }
@@ -177,18 +193,18 @@ default{
             rotation rezzer_rot=(rotation)llList2String(tmplist,1);
             vector relpos;
             integer i;
-            llOwnerSay("cmdposlist="+(string)llGetListLength(command_pos_list));
+            //llOwnerSay("cmdposlist="+(string)llGetListLength(command_pos_list));
             for(i=0;i<llGetListLength(command_pos_list);i+=3){
                 relpos=((vector)("<"+llList2String(command_pos_list,i)+">")-rezzer_pos)/rezzer_rot;
                 command_pos_list=llListReplaceList(command_pos_list,(list)relpos,i+1,i+1);
-                llOwnerSay("pos_list_i="+llList2String(command_pos_list,i)+"\nrelpos="+(string)relpos);
+                //llOwnerSay("pos_list_i="+llList2String(command_pos_list,i)+"\nrelpos="+(string)relpos);
             }
             for(i=0;i<llGetListLength(command_ang_list);i+=3){
                 rotation relrot=llEuler2Rot((vector)(llList2String(command_ang_list,i))*DEG_TO_RAD)/rezzer_rot;
                 command_ang_list=llListReplaceList(command_ang_list,(list)relrot,i+1,i+1);
             }
-            llOwnerSay("poslist="+llDumpList2String(command_pos_list,"\n"));
-            llOwnerSay("anglist="+llDumpList2String(command_ang_list,"\n"));
+            //llOwnerSay("poslist="+llDumpList2String(command_pos_list,"\n"));
+            //llOwnerSay("anglist="+llDumpList2String(command_ang_list,"\n"));
         }
         if(msg=="POSSET"){
             list tmplist=llParseString2List(id,["&"],[]);//<128,128,20>&<0,0,90>
@@ -198,16 +214,16 @@ default{
             vector abspos;
             string absang;
             integer i;
-            llOwnerSay("cmdposlist="+(string)llGetListLength(command_pos_list));
+            //llOwnerSay("cmdposlist="+(string)llGetListLength(command_pos_list));
             for(i=0;i<llGetListLength(command_pos_list);i+=3){
                 abspos=rezzer_pos+(llList2Vector(command_pos_list,i+1)*rezzer_rot);
                 command_pos_list=llListReplaceList(command_pos_list,(list)abspos,i+2,i+2);
-                llOwnerSay("abspos_i("+(string)i+")="+(string)abspos);
+                //llOwnerSay("abspos_i("+(string)i+")="+(string)abspos);
             }
             for(i=0;i<llGetListLength(command_ang_list);i+=3){
                 absang=(string)(llRot2Euler(llList2Rot(command_ang_list,i+1)*rezzer_rot)*RAD_TO_DEG);
                 command_ang_list=llListReplaceList(command_ang_list,(list)absang,i+2,i+2);
-                llOwnerSay("absrot_i("+(string)i+")="+absang);
+                //llOwnerSay("absrot_i("+(string)i+")="+absang);
             }
             //置換
             command_after=command_before;

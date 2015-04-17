@@ -1,30 +1,11 @@
-﻿//##########################################
-//
-//  CONTRO - #REZZER_sub
-//
-//  ver.2.0 [2015/4/1]
-//##########################################
-//[ スクリの動作 ]
-//１、指定された座標にオブジェクトをREZする
-//２、コントローラーからレザーの位置確認要求があれば自分の座標・角度をシャウトする
-//３、REZするオブジェクトへの命令を一時的にストックしておきREZされた後に発言する
-//
-// [ コマンド ]
-// REZ,___,pos(),ang(),second
-//
-//====================================================
-//[input]
-// (COMMON_CHANNEL) channelname,REZ,XXX,<X,Y,Z>,<ROT_X,ROT_Y,ROT_Z>,second  [from CONTROLLER]
-// (COMMON_CHANNEL) channelname,GET_REZZER_INFO [from CONTROLLER]
-//
-//[output]
-// (COMMON_CHANNEL) chnlname+",REZZER_INFO,"+(string)llGetPos()+","+(string)llGetRot() [to CONTROLLER]
-//
-//##########################################
-//integer COMMON_CHANNEL=1357246809; //共通リッスンチャンネル
-integer COMMON_CHANNEL=0; //共通リッスンチャンネル
-vector rezzer_pos;    //REZZERの初期位置を記憶しておく変数
-list save_command_list=[]; //再送信するコマンドを保存しておく
-list rezzing_objname_list=[];
-list rezzed_obj_que=[];
-//==============================================
+﻿default
+{
+    state_entry(){}
+    link_message(integer sender,integer num,string msg,key id){
+        if((num==123456)&&(id=="REZ")){
+            list tmplist=llCSV2List(msg);//objname,<XYZ>,<XYZW>,0
+            llSetRegionPos((vector)llList2String(tmplist,1)+<0,0,9.5>);
+            llRezAtRoot(llList2String(tmplist,0),(vector)llList2String(tmplist,1),ZERO_VECTOR,(rotation)llList2String(tmplist,2),(integer)((float)llList2String(tmplist,3)*1000));
+        }
+    }
+}
