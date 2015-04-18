@@ -65,11 +65,11 @@ default
         if(chg & CHANGED_LINK){
             integer links = 0;
             if(llGetObjectPrimCount(llGetKey()) < (links = llGetNumberOfPrims())){
-                llShout(COMMON_CHANNEL,llGetObjectDesc()+"\n"+anim_obj_name+",DANCE_REGISTRY,"+(string)registry_number+","+llGetLinkName(links));
+                llShout(COMMON_CHANNEL,llGetObjectDesc()+"\n"+anim_obj_name+",DANCE_REGISTRY,"+llGetLinkName(links)+","+(string)registry_number);
                 //llSay(0,"A,DANCE_REGISTRY,"+anim_obj_name+","+(string)registry_number+","+llGetLinkName(links));
             }else{
-				llShout(COMMON_CHANNEL,llGetObjectDesc()+"\n"+anim_obj_name+",DANCE_REGISTRY,"+(string)registry_number+",");
-			}
+                llShout(COMMON_CHANNEL,llGetObjectDesc()+"\n"+anim_obj_name+",DANCE_REGISTRY,,"+(string)registry_number);
+            }
         }
     }
 }

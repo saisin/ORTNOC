@@ -33,8 +33,8 @@
 // ___,好きなコマンド,好きな文字列
 //}
 //##########################################
-//integer COMMON_CHANNEL=1357246809; //共通リッスンチャンネル
-integer COMMON_CHANNEL=0; //共通リッスンチャンネル
+integer COMMON_CHANNEL=1357246809; //共通リッスンチャンネル
+//integer COMMON_CHANNEL=0; //共通リッスンチャンネル
 string NOTENAME="commands";
 
 list commandlist=[]; //ノートカードから読み込んだコマンドのリスト
