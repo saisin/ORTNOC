@@ -84,7 +84,7 @@ default{
         integer i;
         for(i=1;i<llGetListLength(tmplist);i++){
             if(llGetSubString(llList2String(tmplist,i),0,llStringLength(objname))==objname+","){
-                list tmplist2=llCSV2List(llList2String(tmplist,i));//objname,MOVE,<xyz>,<xyz>
+                list tmplist2=llParseStringKeepNulls(llList2String(tmplist,i),[","],[]);//objname,MOVE,<xyz>,<xyz>
                 string command=llList2String(tmplist2,1);    //命令の種類
 
                 //----コマンドごとに処理開始----
@@ -109,15 +109,15 @@ default{
                     }
                 }
                 else if(command=="COLOR"){//___,COLOR,<R,G,B>
-                    vector color=0.01*(vector)llList2String(tmplist2,2);
+                    vector color=(vector)llList2String(tmplist2,2)/255.0;
                     integer j;
                     for(j=0;j<=llGetNumberOfPrims();j++){
                         llSetLinkColor(j,color,ALL_SIDES);
                     }
                 }
                 else if(command=="COLOR_ANIM"){//___,COLOR_ANIM,<R,G,B>,<R,G,B>,second
-                    vector color1=0.01*(vector)llList2String(tmplist2,2);
-                    vector color2=0.01*(vector)llList2String(tmplist2,3);
+                    vector color1=(vector)llList2String(tmplist2,2)/255.0;
+                    vector color2=(vector)llList2String(tmplist2,3)/255.0;
                     vector color_difference=<color1.x-color2.x,color1.y-color2.y,color1.z-color2.z>;
                     float second=(float)llList2String(tmplist2,4);
                     integer frame=(integer)(second/0.25);//(integer)llList2String(tmplist22,5);
@@ -130,6 +130,7 @@ default{
                             llSetLinkColor(j,<color1.x-(color_difference.x*(float)i/(float)frame),color1.y-(color_difference.y*(float)i/(float)frame),color1.z-(color_difference.z*(float)i/(float)frame)>,ALL_SIDES);
                         }
                     }
+                    llSetLinkColor(j,color2,ALL_SIDES);
                 }
                 else if(command=="ALPHA"){//___,ALPHA,alpha
                     float alpha=(float)llList2String(tmplist2,2)*0.01;
