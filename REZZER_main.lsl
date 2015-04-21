@@ -21,8 +21,8 @@
 // (COMMON_CHANNEL) chnlname+",REZZER_INFO,"+(string)llGetPos()+","+(string)llGetRot() [to CONTROLLER]
 //
 //##########################################
-//integer COMMON_CHANNEL=1357246809; //共通リッスンチャンネル
-integer COMMON_CHANNEL=0; //共通リッスンチャンネル
+integer COMMON_CHANNEL=1357246809; //共通リッスンチャンネル
+//integer COMMON_CHANNEL=0; //共通リッスンチャンネル
 vector rezzer_pos;    //REZZERの初期位置を記憶しておく変数
 list save_command_list=[]; //再送信するコマンドを保存しておく
 list rezzing_objname_list=[];
@@ -97,33 +97,39 @@ default{
             return;
         }
 
+         //自分宛てコマンドチェック
         string objname=llGetObjectName();
+        if((rezzing_objname_list==[])&&(llSubStringIndex(msg,","+objname)==-1)){
+            //llOwnerSay("自分宛てコマンドがみつからないのでリターン");
+            return;
+        }
         list tmplist=llParseStringKeepNulls(msg,["\n"],[]);//A/objname,MOVE,<xyz>,<xyz>/objname,MOVE,<xyz>,<xyz>
-        list rezcmd_list;
         integer i;
         for(i=1;i<llGetListLength(tmplist);i++){//objname,MOVE,<xyz>,<xyz>
             list tmplist2=llCSV2List(llList2String(tmplist,i));//objname,MOVE,<xyz>,<xyz>
+            string command=llList2String(tmplist2,1);    //命令の種類
             if(llList2String(tmplist2,0)==objname){
-                    string command=llList2String(tmplist2,1);    //命令の種類
                     if(command=="GET_REZZER_INFO"){
                         llShout(COMMON_CHANNEL,llGetObjectDesc()+"\nREZZER_INFO,"+(string)llGetPos()+","+(string)llGetRot());//CONTROLERに位置・回転情報を返す
                         rezzer_pos=llGetPos();
                         return;
-                    }else if(command=="REZ"){//objname,REZ,rezobj,<XYZ>,<XYZw>,0
-                        if(rezzing_objname_list==[]){
-                            llSetLinkPrimitiveParamsFast(llGetLinkNumber(),[PRIM_TEXTURE,ALL_SIDES,TEXTURE_TRANSPARENT,<1,1,0>,<0,0,0>,0]);
-                        }
-                        //llOwnerSay("REZ準備");
-                        string rezobjname=llList2String(tmplist2,2);
-                        if(llGetInventoryType(rezobjname)==INVENTORY_NONE){return;}//インベントリーに無い場合中断
-                        rezcmd_list+=llList2List(tmplist2,2,5);
-                        AddRezObjName(rezobjname);
-                        llMessageLinked(LINK_THIS,123456,llList2String(tmplist2,2)+","+llList2String(tmplist2,3)+","+llList2String(tmplist2,4)+","+llList2String(tmplist2,5)+","+llList2String(tmplist2,6),"REZ");
                     }
-            }else{//REZ中のオブジェクト宛てコマンドは保存
+            }else{
+                if(command=="REZ"){//rezobjname,REZ,<XYZ>,<XYZw>,0,rezzername
+                    if(llList2String(tmplist2,5)==objname){
+                        string rezobjname=llList2String(tmplist2,0);
+                        if(llGetInventoryType(rezobjname)==INVENTORY_NONE){return;}//インベントリーに無い場合中断
+                        AddRezObjName(rezobjname);
+                        llMessageLinked(LINK_THIS,123456,rezobjname+","+llList2String(tmplist2,2)+","+llList2String(tmplist2,3)+","+llList2String(tmplist2,4),"REZ");
+                    }
+                }
+                //REZ中のオブジェクト宛てコマンドは保存
                 integer found=llListFindList(rezzing_objname_list,llList2List(tmplist2,0,0));
                 if(found!=-1){
+                    //llOwnerSay("キューにいれます。："+llList2String(tmplist,i));
                     AddCommands(found,llList2String(tmplist,i));
+                }else{
+                    //llOwnerSay("REZオブジェじゃない："+llList2String(tmplist,i));
                 }
             }
         }
