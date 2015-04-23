@@ -1,31 +1,31 @@
 ﻿//##########################################
 //
-//  CONTRO - #ADD_DANCE
+//  CONTRO - #ADD_ANIMATION
 //
-// ver.2.0[2015/4/1]
+// ver.2.02[2015/4/23]
 //##########################################
 //[ スクリの動作 ]
-// ダンス用のスクリプト
+// アニメーション・ダンス用のスクリプト
 // １つ終わると次のアニメを順次再生する。重複はできない。
 //
 //
 // [ コントローラーコマンド ]
-// ___,DANCE_REGISTRY,アバター名,登録ナンバー                        //最初にアバターを登録する
-// ___,DANCE_START,アニメーション名,登録ナンバー(1),登録ナンバー(2)   //時間分アニメーションする。0だとループ
-// ___,DANCE_STOP,登録ナンバー(1),登録ナンバー(2)                   //ダンスを止める
+// ___,ANIM_REGISTRY,アバター名,登録ナンバー                        //最初にアバターを登録する
+// ___,ANIM_START,アニメーション名,登録ナンバー(1),登録ナンバー(2)  //アニメーションスタート
+// ___,ANIM_STOP,登録ナンバー(1),登録ナンバー(2)                   //アニメーションストップ
 //
 //
 //====================================================
 //[input]
-// (link_message) DANCE_REGISTRY&avatar_name&registry_number
-// (link_message) DANCE_START&anim_name&anim_time&registry_number&registry_number
-// (link_message) DANCE_STOP&registry_number&registry_number
+// (link_message) ANIM_REGISTRY&avatar_name&registry_number
+// (link_message) ANIM_START&anim_name&registry_number&registry_number
+// (link_message) ANIM_STOP&registry_number&registry_number
 //
 //##########################################8
 list NUMLIST=["0","1","2","3","4","5","6","7","8","9"]; //数字チェック用
 integer LNKMSGCHNL=466938182; //リンクメッセージで通信するチャンネル
 string MSG_COULDNT_FIND_AVATAR="さんが96m以内に見つかりませんでした。";
-string MSG_PERMISSION_ERROR="アニメーションの権限がありません。DANCE_REGISTRYコマンドで権限を取得してください。";
+//string MSG_PERMISSION_ERROR="アニメーションの権限がありません。ANIM_REGISTRYコマンドで権限を取得してください。";
 
 integer my_script_number;                //このスクリプトの番号
 string my_avatar_name;                    //このスクリプトが保持しているアバター名
@@ -68,7 +68,7 @@ default{
         list data_list=llParseStringKeepNulls(msg,["&"],[]);
         string command=llList2String(data_list,0);//比較用にコマンドは変数に入れる
         
-        if(command=="DANCE_REGISTRY"){//DANCE_REGISTRY,AVANAME,NUMBER
+        if(command=="ANIM_REGISTRY"){//ANIM_REGISTRY,AVANAME,NUMBER
             if((integer)llList2String(data_list,2)!=my_script_number){return;}
             llSetTimerEvent(0);//とりあえず、全てストップしてリセット
             if((llGetPermissions()&PERMISSION_TRIGGER_ANIMATION)&&(llGetPermissionsKey()==my_avatar_key)){
@@ -90,7 +90,7 @@ default{
                     }
                 }
             }
-        }else if(command=="DANCE_START"){//DANCE_START,DANCENAME,NUMBER,NUMBER
+        }else if(command=="ANIM_START"){//ANIM_START,DANCENAME,NUMBER,NUMBER
             if(llListFindList(llList2List(data_list,2,-1),(list)((string)my_script_number))==-1){
                 return;
             }
@@ -99,7 +99,7 @@ default{
                 nowanim=llList2String(data_list,1);
                 llStartAnimation(nowanim);
             }
-        }else if(command=="DANCE_STOP"){//DANCE_STOP,NUMBER,NUMBER
+        }else if(command=="ANIM_STOP"){//ANIM_STOP,NUMBER,NUMBER
             if(llListFindList(data_list,(list)((string)my_script_number))==-1){return;}
             if((llGetPermissions()&PERMISSION_TRIGGER_ANIMATION)&&(llGetPermissionsKey()==my_avatar_key)){
                 if(nowanim!=""){llStopAnimation(nowanim);}
