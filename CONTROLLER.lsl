@@ -2,7 +2,7 @@
 //
 //  CONTRO - #CONTROLLER
 //
-//    ver.2.0 [2015/4/1]
+//    ver.2.02 [2015/4/25]
 //##########################################
 //[ スクリの動作 ]
 //１、ノートカードに書かれたコマンドをShoutする
@@ -33,8 +33,8 @@
 // ___,好きなコマンド,好きな文字列
 //}
 //##########################################
-integer COMMON_CHANNEL=1357246809; //共通リッスンチャンネル
-//integer COMMON_CHANNEL=0; //共通リッスンチャンネル
+//integer COMMON_CHANNEL=1357246809; //共通リッスンチャンネル
+integer COMMON_CHANNEL=0; //共通リッスンチャンネル
 string NOTENAME="commands";
 
 list commandlist=[]; //ノートカードから読み込んだコマンドのリスト
@@ -168,11 +168,24 @@ default{
                 //pos() ang()を変換
                 command_before=llDumpList2String(commandlist,"&");
                 list tmplist=llParseStringKeepNulls(command_before,["pos("],[""]);
+                integer i;
+                integer ind;
+                string tmptgt;
+                for(i=1;i<llGetListLength(tmplist);i++){
+                    tmptgt=llList2String(tmplist,i);
+                    ind=llSubStringIndex(tmptgt,")");
+                    tmplist=llListReplaceList(tmplist,(list)(llGetSubString(tmptgt,0,ind-1)+">"+llGetSubString(tmptgt,ind+1,-1)),i,i);
+                }
                 command_after=llDumpList2String(tmplist,"<");
                 tmplist=llParseStringKeepNulls(command_after,["ang("],[""]);
+                for(i=1;i<llGetListLength(tmplist);i++){
+                    tmptgt=llList2String(tmplist,i);
+                    ind=llSubStringIndex(llList2String(tmplist,i),")");
+                    tmplist=llListReplaceList(tmplist,(list)(llGetSubString(tmptgt,0,ind-1)+">"+llGetSubString(tmptgt,ind+1,-1)),i,i);
+                }
                 command_after=llDumpList2String(tmplist,"<");
-                tmplist=llParseStringKeepNulls(command_after,[")"],[""]);
-                command_after=llDumpList2String(tmplist,">");
+                //tmplist=llParseStringKeepNulls(command_after,[")"],[""]);
+                //command_after=llDumpList2String(tmplist,">");
                 commandlist=llParseString2List(command_after,["&"],[]);
 
                 //llOwnerSay("poslist="+llDumpList2String(command_pos_list,"\n"));
